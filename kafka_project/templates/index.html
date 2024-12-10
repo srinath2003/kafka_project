@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Product Store!</h1>
+        <div class="product-list">
+            {% for product in products %}
+                <div class="product-card">
+                    <h2>{{ product.name }}</h2>
+                    <p>Price: ${{ product.price }}</p>
+                    <button onclick="logAction('{{ product.product_id }}', 'click')">Click</button>
+                    <button onclick="logAction('{{ product.product_id }}', 'add_to_cart')">Add to Cart</button>
+                    <button onclick="logAction('{{ product.product_id }}', 'buy')">Buy</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function logAction(productId, action) {
+            fetch(`/${action}/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: "user123" })  // Replace with dynamic user_id if needed
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                alert(data.message);
+            }).catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert("An error occurred. Please try again.");
+            });
+        }
+    </script>
+</body>
+</html>
